@@ -17,7 +17,7 @@ This app builds an **inverted index** from your data and allows you to search so
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/music-search.git
+git clone https://github.com/payush624/music-search.git
 cd music-search
 ```
 
