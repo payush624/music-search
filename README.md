@@ -19,19 +19,20 @@ This app builds an **inverted index** from your data and allows you to search so
 ```bash
 git clone https://github.com/YOUR_USERNAME/music-search.git
 cd music-search
-
+```
 
 2. **Build and start the containers**
-
+```bash
 docker compose up --build
-
+```
 
 3. **Open the app in your browser**
-
+```bash
 http://127.0.0.1:5000
+```
 
-
-Project Structure
+**Project Structure**
+```bash
 music-search/
 ├── Dockerfile
 ├── docker-compose.yml
@@ -49,7 +50,7 @@ music-search/
 │   ├── screenshot1.png
 │   └── screenshot2.png
 └── README.md
-
+```
 
 Notes
 
@@ -57,12 +58,15 @@ Database: PostgreSQL, persists data using Docker volumes.
 
 Index files (song_document.json and inverted_index.json) are generated automatically in src/ at startup.
 
-For development, edit code in src/. Rebuild if you make significant changes:
 
+For development, edit code in src/. Rebuild if you make significant changes:
+```bash
 docker compose up --build
+```
 
 Optional: Stop and Remove Containers
 
 To stop the containers:
-
+```bash
 docker compose down
+```
