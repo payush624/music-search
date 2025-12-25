@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Search Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 50px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .search-form {
+            background: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+            padding: 10px;
+        }
+
+        .search-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .search-button:hover {
+            transform: scale(1.05);
+        }
+
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .rank {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .song-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .artist {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .metadata {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 15px;
+            color: #666;
+        }
+
+        .badge.title-match {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge.lyrics-match {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .score {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .info-message {
+            text-align: center;
+            color: white;
+            font-size: 1.1em;
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Music Search Engine</h1>
+        <p class="subtitle">Search by song name or lyrics</p>
+
+        <!-- SEARCH FORM (submits to Flask) -->
+        <form method="POST" action="/" class="search-form">
+            <input 
+                type="text" 
+                name="query" 
+                class="search-input"
+                placeholder="Type song name or lyrics..." 
+                value="{{ query }}"
+                autofocus
+                required
+            >
+            <button type="submit" class="search-button">Search</button>
+        </form>
+
+        <!-- RESULTS SECTION -->
+        {% if searched %}
+            {% if results %}
+                <div class="results">
+                    {% for result in results %}
+                        <div class="result-card">
+                            <span class="rank">{{ loop.index }}</span>
+                            <div class="song-name">{{ result.song_name }}</div>
+                            <div class="artist">{{ result.artist }}</div>
+                            <div class="metadata">
+                                {% if result.title_match %}
+                                    <span class="badge title-match">Title Match</span>
+                                {% endif %}
+                                {% if result.lyrics_match %}
+                                    <span class="badge lyrics-match">Lyrics Match</span>
+                                {% endif %}
+                                <span class="badge">Matched: {{ result.matched_words }}</span>
+                                <span class="score">Score: {{ result.score }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    No results found for "{{ query }}". Try different keywords.
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="info-message">
+                Enter a song name or lyrics to start searching
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

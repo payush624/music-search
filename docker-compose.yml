@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: music_db
+    environment:
+      POSTGRES_USER: ayush
+      POSTGRES_PASSWORD: ayush_music 
+      POSTGRES_DB: music_search
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ayush -d music_search"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: music_app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://ayush:ayush_music@db:5432/music_search
+    ports:
+      - "5000:5000"
+    volumes:
+      # This maps your local 'src' folder to '/app/src' inside the container
+      - ./src:/app/src
+    # This tells Docker: "Start inside the folder where the .py files are"
+    working_dir: /app/src
+    command: >
+      sh -c "
+        echo '--- Checking Directory Content ---' &&
+        ls -la &&
+        echo '--- Running Indexer ---' &&
+        python inverted_index_and_document.py &&
+        echo '--- Starting Flask ---' &&
+        python app.py
+      "
+
+volumes:
+  postgres_data:

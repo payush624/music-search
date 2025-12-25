@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+
+# Generated index files
+src/index/
+src/*.json
+
+# Docker
+postgres_data/
+.env
